@@ -1,0 +1,5 @@
+# Dockerfile.node-exporter
+FROM quay.io/prometheus/node-exporter:latest
+
+# Command to run the node-exporter
+CMD ["--path.rootfs=/host"]

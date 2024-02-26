@@ -1,0 +1,9 @@
+# Dockerfile.blackbox
+FROM prom/blackbox-exporter:latest
+
+# Copy configuration file
+COPY config/blackbox.yml /etc/blackbox/blackbox.yml
+
+# Command to run the blackbox-exporter
+CMD ["--config.file=/etc/blackbox/blackbox.yml"]
+

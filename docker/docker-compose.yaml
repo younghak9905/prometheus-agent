@@ -1,0 +1,74 @@
+version: "3"
+
+networks:
+  loki:
+
+
+x-logging: &logging
+  logging:
+    driver: loki
+    options:
+      loki-url: "${LOKI_URL}"
+
+
+services:
+ 
+  promtail:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile.promtail
+    ports:
+      - 9080:9080
+    user : root
+    volumes:
+         - /var/log:/var/log
+         - /var/lib/docker/containers:/var/lib/docker/containers
+    networks:
+      - loki
+    restart: always
+    container_name: prom-promtail-1
+    image: prom-promtail
+  node-exporter:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile.node-exporter
+    volumes:
+      - "/:/host:ro,rslave"
+    pid: "host"
+    ports:
+      - "9100:9100" # 호스트의 9100 포트와 컨테이너의 9100 포트 연결
+    restart: always
+    networks:
+      - loki
+    container_name: prom-node-exporter-1
+    image: prom-node-exporter
+  blackbox:   
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile.blackbox
+    container_name: prom-blackbox-1
+    image: prom-blackbox
+    ports:
+      - 9115:9115
+    restart: always      
+  cadvisor:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile.cadvisor
+    container_name: prom-cadvisor-1
+    image: prom-cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - 8080:8080
+    privileged: true
+    devices:
+      - /dev/kmsg
+    networks:
+      - loki
+    restart: always    
+

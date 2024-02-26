@@ -1,0 +1,6 @@
+# Dockerfile
+FROM grafana/promtail:latest
+
+# 복사 설정 파일
+COPY config/promtail.yml /etc/promtail/promtail.yml
+CMD ["--config.file=/etc/promtail/promtail.yml"]

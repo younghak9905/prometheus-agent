@@ -1,0 +1,9 @@
+# Dockerfile.cadvisor
+FROM gcr.io/cadvisor/cadvisor:latest
+
+# No additional configurations are required as cAdvisor doesn't need a configuration file
+# But if you have any custom configurations or files, you can copy them using the COPY instruction
+
+# Example:
+# COPY ./config/cadvisor-config /etc/cadvisor/config
+
